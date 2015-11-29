@@ -9,6 +9,7 @@ BluetoothModule::BluetoothModule()
 	btStream = new SoftwareSerial(RX, TX);
 	btStream->begin(9600);
 	btStream->println("BT started!");
+	btStream->flush();
 }
 
 bool BluetoothModule::IsDataAvailable()

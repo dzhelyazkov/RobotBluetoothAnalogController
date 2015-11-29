@@ -27,9 +27,15 @@ void ArrowController::StartMotors()
 		break;
 	case LEFT:
 		leftMotor.Move(1);
+		rightMotor.Stop();
 		break;
 	case RIGHT:
 		rightMotor.Move(0);
+		leftMotor.Stop();
+		break;
+	case UNDEF:
+		rightMotor.Stop();
+		leftMotor.Stop();
 		break;
 	}
 }

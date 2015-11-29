@@ -9,12 +9,16 @@
 #include "interruptor\WaitInterruptor.h"
 #include "bluetooth\BluetoothModule.h"
 
+#define REQUEST_DIRECTION "0"
+
 ArrowController testController;
 BluetoothModule bluetooth;
 
 // the setup function runs once when you press reset or power the board
 void setup() {
-	testController.interruptor = new WaitInterruptor(300);
+	//testController.interruptor = new WaitInterruptor(300);
+
+	bluetooth.SendMessage(REQUEST_DIRECTION);
 }
 
 // the loop function runs over and over again until power down or reset
@@ -22,28 +26,37 @@ void loop() {
 
 	if (bluetooth.IsDataAvailable())
 	{
-		int data = bluetooth.GetNextData();
-		bluetooth.SendMessage("Data received!");
-		switch (data)
+		char data;
+		while (bluetooth.IsDataAvailable())
+			data = bluetooth.GetNextData();
+
+		/*switch (data)
 		{
-		case 'f':
+		case 1:
 			testController.dir = MoveDir::FORWARD;
 			break;
-		case 'l':
+		case 2:
 			testController.dir = MoveDir::LEFT;
 			break;
-		case 'r':
+		case 3:
 			testController.dir = MoveDir::RIGHT;
 			break;
-		case 'b':
+		case 4:
 			testController.dir = MoveDir::BACKWARD;
 			break;
 		default:
 			testController.dir = MoveDir::UNDEF;
 			break;
-		}
+		}*/
+
+		if (data < 0 || data > 4)
+			data = 0;
+		testController.dir = static_cast<MoveDir>(data);
 
 		testController.Move();
+
+		bluetooth.SendMessage(REQUEST_DIRECTION);
 	}
+	delay(200);
 }
 
